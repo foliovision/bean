@@ -439,7 +439,13 @@
     , listener = W3C_MODEL
         ? function (element, type, add) {
             // new browsers
-            element[add ? addEvent : removeEvent](type, rootListener, false)
+            // TODO: Is it safe to just assume that touch events are passive? We use it for the touch events only anyway.
+            var extra = false;
+            if ( 'touchstart' === type || 'touchmove' === type ) {
+              extra = { passive: true }
+            }
+
+            element[add ? addEvent : removeEvent](type, rootListener, extra )
           }
         : function (element, type, add, custom) {
             // IE8 and below, use attachEvent/detachEvent and we have to piggy-back propertychange events
